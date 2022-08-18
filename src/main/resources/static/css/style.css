@@ -1,0 +1,12 @@
+body {
+    font-family: 'Inter', sans-serif;
+}
+
+.table > tbody > tr > td {
+    vertical-align: middle;
+}
+
+.table__options {
+    width: 200px;
+    text-align: right;
+}

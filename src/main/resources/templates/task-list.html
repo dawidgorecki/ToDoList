@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Bootstrap CSS -->
+    <link th:href="@{https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css}" rel="stylesheet"
+          integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+
+    <!-- Fonts -->
+    <link rel="preconnect" th:href="@{https://fonts.googleapis.com}">
+    <link rel="preconnect" th:href="@{https://fonts.gstatic.com}" crossorigin>
+    <link th:href="@{https://fonts.googleapis.com/css2?family=Inter&display=swap}" rel="stylesheet">
+
+    <!-- Custom styles -->
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+
+    <title th:text="#{todo.list.title}"></title>
+</head>
+<body>
+
+<main class="container">
+    <div class="row mt-5">
+        <div class="col">
+            <div class="d-flex justify-content-between mb-4 border-bottom pb-2">
+                <h1 th:text="#{todo.list.title} + ' (' + ${count} + ')'"></h1>
+                <div>
+                    <a th:href="@{/add}" th:text="#{todo.btn.add}" class="btn btn-success"></a>
+                </div>
+            </div>
+
+            <th:block th:if="${#lists.isEmpty(tasks)}">
+                <p th:text="#{todo.list.empty}" class="alert alert-info"></p>
+            </th:block>
+
+            <th:block th:if="${not #lists.isEmpty(tasks)}">
+                <p th:if="${created}" th:utext="#{todo.list.created} + ': ' + ${created}" class="alert alert-success"></p>
+                <p th:if="${deleted}" th:utext="#{todo.list.deleted} + ': ' + ${deleted}" class="alert alert-success"></p>
+
+                <table class="table table">
+                    <thead>
+                    <tr>
+                        <th>#</th>
+                        <th th:text="#{todo.description}"></th>
+                        <th th:text="#{todo.category}"></th>
+                        <th th:text="#{todo.priority}"></th>
+                        <th th:text="#{todo.deadline}"></th>
+                        <th th:text="#{todo.options}" class="table__options"></th>
+                    </tr>
+                    </thead>
+                    <tbody class="table-group-divider">
+                    <tr th:each="task,stats : ${tasks}" th:classappend="${task.completed} ? 'text-muted'">
+                        <td th:text="${stats.count}"></td>
+                        <td th:text="${task.description}"></td>
+                        <td th:text="${task.category.description}"></td>
+                        <th:block th:switch="${task.priority}">
+                            <td th:case="1" th:text="#{todo.priority.veryhigh}"></td>
+                            <td th:case="2" th:text="#{todo.priority.high}"></td>
+                            <td th:case="4" th:text="#{todo.priority.low}"></td>
+                            <td th:case="5" th:text="#{todo.priority.verylow}"></td>
+                            <td th:case="*" th:text="#{todo.priority.normal}"></td>
+                        </th:block>
+                        <td th:utext="${task.deadline} + '<br><small>(pozostało dni: ' + ${task.daysToDeadline} + ')</small>'"></td>
+                        <td class="text-end">
+                            <th:block th:if="${not task.completed}">
+                                <a th:href="@{/tasks/{id}/mark-as-completed(id=${task.id})}" th:text="#{todo.btn.done}" class="btn btn-success"></a>
+                                <a th:href="@{/tasks/{id}/remove(id=${task.id})}" th:text="#{todo.btn.delete}" class="btn btn-danger" onclick="return confirm('Czy na pewno usunąć?')"></a>
+                            </th:block>
+                            <th:block th:if="${task.completed}">
+                               Gotowe
+                            </th:block>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </th:block>
+        </div>
+    </div>
+</main>
+
+</body>
+</html>
