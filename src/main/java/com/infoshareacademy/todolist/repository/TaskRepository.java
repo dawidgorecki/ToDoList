@@ -43,7 +43,12 @@ public class TaskRepository {
 
     public void add(Task object) {
         // id of last element + 1
-        object.setId(tasks.get(tasks.size() - 1).getId() + 1);
+        if (tasks.isEmpty()) {
+            object.setId(1);
+        } else {
+            object.setId(tasks.get(tasks.size() - 1).getId() + 1);
+        }
+
         tasks.add(object);
     }
 
